@@ -39,3 +39,22 @@ def book_index():
     for row in book_sql_result:
         books.append(dict({"book_id":row[0], "name":row[1], "price":row[2]}))
     return jsonify(books)
+
+@app.route('/book',methods = ['GET'])
+def get_book_by_id():
+    book_id = request.args.get('book_id')
+    conn = db_connection()
+    cursor = conn.cursor()
+    query = """ SELECT * FROM book where id = ?"""
+    cursor.execute(query,(book_id,))
+    row = cursor.fetchone()
+    if row:
+        data = {"book_id":row[0], "name":row[1], "price":row[2]}
+        return jsonify(data)
+    else:
+        return 'Not Found',404
+
+
+
+
+app.run(host="0.0.0.0",debug=True)
